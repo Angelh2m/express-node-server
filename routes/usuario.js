@@ -3,6 +3,8 @@
  // Inicializar variables
  var app = express();
  var bcrypt = require('bcrypt');
+ var jwt = require('jsonwebtoken');
+ var mdAutenticacion = require('../middlewares/autenticacion');
  var Usuario = require('../models/usuario');
 
  // Rutas
@@ -24,10 +26,11 @@
          });
  });
 
- app.put('/:id', (req, res) => {
 
-     var id = req.params.id;
-     var body = req.body;
+ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
+
+     var id = req.params.id; // Query params
+     var body = req.body; // Body parser
 
      Usuario.findById(id, (err, usuario) => {
          if (err) {
@@ -68,8 +71,8 @@
 
      });
  });
-
- app.post('/', (req, res) => {
+ // Middleware JWT mdAutenticacion
+ app.post('/', mdAutenticacion.verificaToken, (req, res) => {
 
      var body = req.body;
 
@@ -101,7 +104,7 @@
 
  });
 
- app.delete('/:id', (req, res) => {
+ app.delete('/:id', mdAutenticacion.verificaToken, (req, res) => {
      var id = req.params.id;
 
      Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
