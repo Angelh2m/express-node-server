@@ -1,17 +1,12 @@
 var mongoose = require('mongoose');
-// var uniqueValidator = require('mongoose-unique-validator');
-
+var uniqueValidator = require('mongoose-unique-validator');
 var Schema = mongoose.Schema;
 
-
+// Aceptar unicamente los siguientes valores
 var rolesValidos = {
     values: ['ADMIN_ROLE', 'USER_ROLE'],
     message: '{VALUE} no es un rol permitido'
 };
-
-/* *
- *  Schema
- */
 
 var usuarioSchema = new Schema({
 
@@ -22,7 +17,7 @@ var usuarioSchema = new Schema({
     role: { type: String, required: true, default: 'USER_ROLE', enum: rolesValidos }
 
 });
-
-// usuarioSchema.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
+// Validar de una manera mejor con mongoose cuando ocurra un error
+usuarioSchema.plugin(uniqueValidator, { message: '{PATH} debe de ser único' });
 
 module.exports = mongoose.model('Usuario', usuarioSchema);
